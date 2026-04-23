@@ -3,323 +3,280 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Harland · Message Review</title>
+<title>Harland Â· Message Review</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* ── DESIGN TOKENS ───────────────────────────── */
+/* ââ DESIGN TOKENS âââââââââââââââââââââââââââââ */
 :root {
-  --gold:         #C9A84C;
-  --gold-light:   #E2C97E;
-  --gold-dim:     rgba(201,168,76,0.10);
-  --gold-border:  rgba(201,168,76,0.25);
-  --obsidian:     #0C0C0E;
-  --obs-2:        #121214;
-  --obs-3:        #191920; /* slightly blue-tinted for depth */
-  --obs-4:        #222228;
-  --obs-5:        #2D2D34;
-  --obs-6:        #38383F;
-  --cream:        #F2EDE4;
-  --cream-dim:    rgba(242,237,228,0.06);
-  --text:         #C4BEB8;
-  --text-dim:     #68635F;
-  --text-bright:  #E8E3DC;
-  --red:          #C96060;
-  --red-dim:      rgba(201,96,96,0.10);
-  --red-border:   rgba(201,96,96,0.28);
-  --amber:        #C9903C;
-  --amber-dim:    rgba(201,144,60,0.10);
-  --green:        #5AAF82;
-  --green-dim:    rgba(90,175,130,0.10);
-  --green-border: rgba(90,175,130,0.28);
-  --blue:         #5A8ED4;
-  --blue-dim:     rgba(90,142,212,0.10);
-  --line-color:   #06C755;
-  --line-dim:     rgba(6,199,85,0.12);
-  --line-border:  rgba(6,199,85,0.28);
-  --purple:       #8B6DC8;
-  --purple-dim:   rgba(139,109,200,0.10);
-  --r: 8px;
-  --r-sm: 5px;
+  --gold: #C9A84C; --gold-light: #E2C97E;
+  --gold-dim: rgba(201,168,76,0.10); --gold-border: rgba(201,168,76,0.25);
+  --obsidian: #0C0C0E; --obs-2: #121214; --obs-3: #191920;
+  --obs-4: #222228; --obs-5: #2D2D34; --obs-6: #38383F;
+  --cream: #F2EDE4; --cream-dim: rgba(242,237,228,0.06);
+  --text: #C4BEB8; --text-dim: #68635F; --text-bright: #E8E3DC;
+  --red: #C96060; --red-dim: rgba(201,96,96,0.10); --red-border: rgba(201,96,96,0.28);
+  --amber: #C9903C; --amber-dim: rgba(201,144,60,0.10); --amber-border: rgba(201,144,60,0.28);
+  --green: #5AAF82; --green-dim: rgba(90,175,130,0.10); --green-border: rgba(90,175,130,0.28);
+  --blue: #5A8ED4; --blue-dim: rgba(90,142,212,0.10); --blue-border: rgba(90,142,212,0.28);
+  --line-color: #06C755; --line-dim: rgba(6,199,85,0.12); --line-border: rgba(6,199,85,0.28);
+  --purple: #8B6DC8; --purple-dim: rgba(139,109,200,0.10); --purple-border: rgba(139,109,200,0.28);
+  --teachworks: #E89C4A; --teachworks-dim: rgba(232,156,74,0.10); --teachworks-border: rgba(232,156,74,0.28);
+  --r: 8px; --r-sm: 5px;
   --shadow: 0 2px 16px rgba(0,0,0,0.4);
 }
 
-/* ── RESET ───────────────────────────────────── */
+/* ââ RESET âââââââââââââââââââââââââââââââââââââ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; }
 body {
-  background: var(--obsidian);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 13px;
-  line-height: 1.65;
-  min-height: 100%;
-  /* subtle grain texture */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C%2Fsvg%3E");
+  background: var(--obsidian); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-weight: 300;
+  font-size: 13px; line-height: 1.65; min-height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
 }
-
-/* ── SCROLLBAR ───────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--obs-2); }
 ::-webkit-scrollbar-thumb { background: var(--obs-5); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--obs-6); }
 
-/* ── SIDEBAR ─────────────────────────────────── */
+/* ââ LAYOUT ââ */
 .layout { display: flex; min-height: 100vh; }
 
 .sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  background: var(--obs-2);
-  border-right: 1px solid var(--obs-4);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0;
-  height: 100vh;
-  z-index: 10;
-  padding: 0;
+  width: 240px; flex-shrink: 0;
+  background: var(--obs-2); border-right: 1px solid var(--obs-4);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; height: 100vh; z-index: 10; padding: 0;
 }
 
 .sidebar-brand {
   padding: 24px 20px 20px;
   border-bottom: 1px solid var(--obs-4);
+  position: relative;
+}
+.sidebar-brand::after {
+  content: ''; position: absolute;
+  left: 20px; right: 20px; bottom: -1px; height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
 }
 .sidebar-wordmark {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--gold);
-  letter-spacing: 0.5px;
-  line-height: 1;
+  font-size: 19px; font-weight: 500; color: var(--gold);
+  letter-spacing: 0.3px; line-height: 1;
 }
 .sidebar-sub {
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-top: 5px;
+  font-size: 8px; letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--text-dim); margin-top: 5px;
 }
 
 .sidebar-stats {
-  padding: 16px 20px;
+  padding: 14px 20px;
   border-bottom: 1px solid var(--obs-4);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: flex; flex-direction: column; gap: 9px;
 }
-.stat-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+.stat-row { display: flex; align-items: center; justify-content: space-between; }
 .stat-label {
-  font-size: 11px;
-  color: var(--text-dim);
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 11px; color: var(--text-dim);
+  display: flex; align-items: center; gap: 6px;
 }
-.stat-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.dot-red    { background: var(--red); box-shadow: 0 0 6px var(--red); }
-.dot-amber  { background: var(--amber); }
-.dot-green  { background: var(--green); }
-.dot-dim    { background: var(--obs-6); }
+.stat-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-red { background: var(--red); box-shadow: 0 0 6px var(--red); }
+.dot-amber { background: var(--amber); }
+.dot-green { background: var(--green); }
+.dot-teachworks { background: var(--teachworks); }
 .stat-val {
   font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  color: var(--text-bright);
-  font-weight: 500;
+  font-size: 13px; color: var(--text-bright); font-weight: 500;
 }
 .stat-val.urgent { color: var(--red); }
+.stat-val.teachworks { color: var(--teachworks); }
 
 .sidebar-nav {
-  padding: 12px 12px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  padding: 12px 12px; flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 2px;
 }
 .nav-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 0 8px;
-  margin-bottom: 6px;
-  margin-top: 8px;
+  font-family: 'DM Mony', monospace;
+  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim); padding: 0 8px; margin-bottom: 6px; margin-top: 8px;
 }
 .nav-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 10px;
-  border-radius: var(--r-sm);
-  border: none;
-  background: transparent;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  text-align: left;
-  width: 100%;
-  gap: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 10px; border-radius: var(--r-sm);
+  border: none; background: transparent; color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 300;
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+  text-align: left; width: 100%; gap: 8px;
 }
 .nav-btn:hover { background: var(--cream-dim); color: var(--text-bright); }
 .nav-btn.active {
-  background: var(--gold-dim);
-  color: var(--gold);
+  background: var(--gold-dim); color: var(--gold);
   border: 1px solid var(--gold-border);
 }
-.nav-btn-icon { font-size: 14px; flex-shrink: 0; }
+.nav-btn-icon { font-size: 13px; flex-shrink: 0; }
 .nav-btn-label { flex: 1; }
 .nav-btn-count {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  background: var(--obs-4);
-  padding: 1px 6px;
-  border-radius: 10px;
-  color: var(--text-dim);
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  background: var(--obs-4); padding: 1px 6px;
+  border-radius: 10px; color: var(--text-dim);
 }
 .nav-btn.active .nav-btn-count {
-  background: var(--gold-dim);
-  color: var(--gold);
+  background: var(--gold-dim); color: var(--gold);
   border: 1px solid var(--gold-border);
 }
+.nav-btn-badge {
+  font-family: 'DM Mono', monospace; font-size: 8px;
+  background: var(--red); color: white;
+  padding: 1px 5px; border-radius: 3px; font-weight: 500;
+}
+.nav-btn.tools {
+  border: 0.5px dashed var(--gold-border);
+  color: var(--gold);
+}
+.nav-btn.tools:hover { background: var(--gold-dim); }
 
 .sidebar-footer {
-  padding: 16px 20px;
+  padding: 14px 20px;
   border-top: 1px solid var(--obs-4);
 }
 .config-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: 1px solid var(--obs-5);
-  border-radius: var(--r-sm);
-  color: var(--text-dim);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 11px;
-  padding: 7px 10px;
-  cursor: pointer;
-  width: 100%;
+  display: flex; align-items: center; gap: 8px;
+  background: none; border: 1px solid var(--obs-5);
+  border-radius: var(--r-sm); color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif; font-size: 11px;
+  padding: 7px 10px; cursor: pointer; width: 100%;
   transition: border-color 0.15s, color 0.15s;
 }
 .config-btn:hover { border-color: var(--gold-border); color: var(--gold); }
 
-/* ── MAIN CONTENT ─────────────────────────────── */
+/* ââ MAIN ââ */
 .main {
-  margin-left: 220px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  margin-left: 240px; flex: 1;
+  display: flex; flex-direction: column; min-height: 100vh;
 }
 
-/* ── TOP BAR ─────────────────────────────────── */
 .topbar {
-  padding: 20px 28px 16px;
-  border-bottom: 1px solid var(--obs-4);
-  background: var(--obs-2);
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  padding: 18px 28px 14px;
+  border-bottom: 1px solid var(--obs-4); background: var(--obs-2);
+  position: sticky; top: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .topbar-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  font-weight: 500;
-  color: var(--cream);
-  line-height: 1;
+  font-size: 22px; font-weight: 500; color: var(--cream); line-height: 1;
 }
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.realtime-badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.pill {
+  display: flex; align-items: center; gap: 6px;
   font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
   color: var(--text-dim);
-  padding: 4px 10px;
-  border: 1px solid var(--obs-5);
-  border-radius: 20px;
+  padding: 4px 10px; border: 1px solid var(--obs-5); border-radius: 20px;
 }
-.realtime-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--obs-5);
-}
-.realtime-badge.connected .realtime-dot {
-  background: var(--green);
-  box-shadow: 0 0 6px var(--green);
+.pill.connected { color: var(--green); border-color: var(--green-border); }
+.pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--obs-5); }
+.pill.connected .pill-dot {
+  background: var(--green); box-shadow: 0 0 6px var(--green);
   animation: pulse 2s infinite;
 }
-.realtime-badge.connected { color: var(--green); border-color: var(--green-border); }
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
 
-.refresh-btn {
-  background: none;
-  border: 1px solid var(--obs-5);
-  border-radius: var(--r-sm);
-  color: var(--text-dim);
-  padding: 6px 10px;
-  cursor: pointer;
-  font-size: 14px;
+.refresh-btn, .bulk-btn {
+  background: none; border: 1px solid var(--obs-5); border-radius: var(--r-sm);
+  color: var(--text-dim); padding: 6px 10px; cursor: pointer;
+  font-size: 12px; font-family: 'DM Sans', sans-serif;
   transition: border-color 0.15s, color 0.15s;
+  display: flex; align-items: center; gap: 6px;
 }
-.refresh-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+.refresh-btn:hover, .bulk-btn:hover {
+  border-color: var(--gold-border); color: var(--gold);
+}
+.bulk-btn.active {
+  border-color: var(--gold); color: var(--gold); background: var(--gold-dim);
+}
 .refresh-btn.spinning { animation: spin 0.6s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── QUEUE ───────────────────────────────────── */
-.queue {
-  padding: 24px 28px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+/* ââ BULK ACTION BAR ââ */
+.bulk-bar {
+  background: var(--amber-dim);
+  border: 1px solid var(--amber-border);
+  border-radius: var(--r);
+  padding: 10px 16px;
+  margin: 16px 28px 0;
+  display: flex; align-items: center; gap: 14px;
+  font-size: 12px; color: var(--amber);
+}
+.bulk-bar.hidden { display: none; }
+.bulk-bar strong { color: var(--amber); font-weight: 500; }
+.bulk-bar .bulk-actions { margin-left: auto; display: flex; gap: 8px; }
+.bulk-btn-small {
+  font-size: 11px; padding: 4px 10px; border-radius: 4px;
+  border: 1px solid var(--amber-border); background: transparent;
+  color: var(--amber); cursor: pointer; font-family: 'DM Sans', sans-serif;
+}
+.bulk-btn-small:hover { background: var(--amber-dim); }
+.bulk-btn-small.primary {
+  background: var(--amber); color: var(--obsidian); border-color: var(--amber);
 }
 
-/* ── MESSAGE CARD ─────────────────────────────── */
+/* ââ PENDING CONTACTS BANNER ââ */
+.pending-banner {
+  background: var(--blue-dim);
+  border: 1px solid var(--blue-border);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  margin: 16px 28px 0;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px;
+}
+.pending-banner.hidden { display: none; }
+.pending-banner-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--blue); color: var(--obsidian);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.pending-banner-body { flex: 1; color: var(--text); }
+.pending-banner-body strong { color: var(--blue); font-weight: 500; }
+.pending-banner-link {
+  color: var(--blue); font-size: 11px; text-decoration: none;
+  padding: 5px 12px; border: 1px solid var(--blue-border); border-radius: 4px;
+  transition: all 0.15s; cursor: pointer;
+}
+.pending-banner-link:hover { background: var(--blue-dim); }
+
+/* ââ QUEUE ââ */
+.queue {
+  padding: 16px 28px 24px; flex: 1;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+/* ââ CARD ââ */
 .card {
   background: var(--obs-3);
   border: 1px solid var(--obs-4);
   border-radius: var(--r);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.15s;
+  position: relative;
   animation: slideIn 0.3s ease;
 }
 @keyframes slideIn {
   from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .card:hover { box-shadow: var(--shadow); }
 .card.urgent { border-color: var(--red-border); }
-.card.urgent .card-header { background: linear-gradient(to right, rgba(201,96,96,0.08), transparent); }
-
+.card.urgent .card-header {
+  background: linear-gradient(to right, rgba(201,96,96,0.08), transparent);
+}
+.card.selected { border-color: var(--gold-border); }
+.card.focused {
+  border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-dim);
+}
 .card-removing {
   animation: slideOut 0.35s ease forwards;
 }
@@ -327,50 +284,63 @@ body {
   to { opacity: 0; transform: translateX(20px); max-height: 0; margin: 0; padding: 0; }
 }
 
-.card-header {
-  padding: 13px 18px 11px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: 1px solid var(--obs-4);
-  flex-wrap: wrap;
-  row-gap: 6px;
+.card-checkbox {
+  position: absolute; top: 14px; left: 14px;
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--obs-6); border-radius: 3px;
+  cursor: pointer; transition: all 0.15s; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
 }
+.card-checkbox.hidden { display: none; }
+.card.selected .card-checkbox {
+  background: var(--gold); border-color: var(--gold);
+}
+.card.selected .card-checkbox::after {
+  content: 'â'; color: var(--obsidian); font-size: 11px; font-weight: 600;
+}
+
+.card-header {
+  padding: 12px 18px 10px 18px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--obs-4);
+  flex-wrap: wrap; row-gap: 6px;
+}
+.card.selectable .card-header { padding-left: 42px; }
+.card.selectable .card-section,
+.card.selectable .edit-section,
+.card.selectable .kb-hints,
+.card.selectable .card-actions { padding-left: 42px; }
 
 .badge {
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 3px;
-  white-space: nowrap;
-  flex-shrink: 0;
+  font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 3px; white-space: nowrap; flex-shrink: 0;
 }
-.badge-urgent  { background: var(--red-dim);    color: var(--red);    border: 1px solid var(--red-border); }
-.badge-line    { background: var(--line-dim);   color: var(--line-color); border: 1px solid var(--line-border); }
-.badge-gmail   { background: var(--amber-dim);  color: var(--amber);  border: 1px solid rgba(201,144,60,0.28); }
-.badge-scheduling { background: var(--blue-dim);   color: var(--blue);  border: 1px solid rgba(90,142,212,0.28); }
-.badge-payment    { background: var(--amber-dim);  color: var(--amber); border: 1px solid rgba(201,144,60,0.28); }
-.badge-academic   { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(139,109,200,0.28); }
-.badge-complaint  { background: var(--red-dim);    color: var(--red);   border: 1px solid var(--red-border); }
-.badge-general    { background: var(--cream-dim);  color: var(--text-dim); border: 1px solid var(--obs-5); }
-.badge-failed     { background: var(--red-dim);    color: var(--red);   border: 1px solid var(--red-border); }
+.badge-urgent { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-border); }
+.badge-line { background: var(--line-dim); color: var(--line-color); border: 1px solid var(--line-border); }
+.badge-gmail { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-border); }
+.badge-scheduling { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue-border); }
+.badge-payment { background: var(--amber-dim); color: var(--amber); border: 1px solid var(--amber-border); }
+.badge-academic { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple-border); }
+.badge-complaint { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-border); }
+.badge-general { background: var(--cream-dim); color: var(--text-dim); border: 1px solid var(--obs-5); }
+.badge-confidence { background: var(--obs-4); color: var(--text-dim); border: 1px solid var(--obs-5); }
+.badge-confidence.high { color: var(--green); border-color: var(--green-border); background: var(--green-dim); }
+.badge-confidence.med { color: var(--amber); border-color: var(--amber-border); background: var(--amber-dim); }
+.badge-confidence.low { color: var(--red); border-color: var(--red-border); background: var(--red-dim); }
+.badge-failed { background: var(--red-dim); color: var(--red); border: 1px solid var(--red-border); }
 
 .card-family {
-  font-size: 13px;
-  color: var(--text-bright);
-  font-weight: 400;
-  flex: 1;
+  font-size: 13px; color: var(--text-bright); font-weight: 400; flex: 1;
+}
+.card-family-sub {
+  font-size: 11px; color: var(--text-dim); font-weight: 300; margin-left: 6px;
 }
 .card-time {
-  font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  color: var(--text-dim);
-  margin-left: auto;
+  font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-dim);
 }
 
-/* Card body sections */
+/* Card sections */
 .card-section {
   padding: 12px 18px;
   border-bottom: 1px solid var(--obs-4);
@@ -378,166 +348,166 @@ body {
 .card-section:last-of-type { border-bottom: none; }
 .section-eyebrow {
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.section-eyebrow.with-action { justify-content: space-between; }
+.section-eyebrow-action {
+  font-size: 10px; color: var(--gold); text-transform: none; letter-spacing: 0;
+  font-weight: 400; cursor: pointer; text-decoration: underline;
 }
 .section-eyebrow .icon { font-size: 11px; }
+
 .inbound-text {
-  font-size: 13px;
-  color: var(--text);
-  line-height: 1.6;
-  white-space: pre-wrap;
-  word-break: break-word;
+  font-size: 13px; color: var(--text); line-height: 1.6;
+  white-space: pre-wrap; word-break: break-word;
 }
 .draft-text {
-  font-size: 13px;
-  color: var(--text-bright);
-  line-height: 1.7;
-  white-space: pre-wrap;
-  word-break: break-word;
+  font-size: 13px; color: var(--text-bright); line-height: 1.7;
+  white-space: pre-wrap; word-break: break-word;
 }
+.no-draft {
+  font-size: 12px; color: var(--red); font-style: italic;
+}
+
+/* Teachworks context */
+.teachworks-context {
+  background: var(--teachworks-dim);
+  border: 1px solid var(--teachworks-border);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  margin: 10px 0 4px;
+  font-size: 11.5px;
+  color: var(--teachworks);
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.teachworks-context-icon {
+  flex-shrink: 0; font-size: 14px; margin-top: -1px;
+}
+.teachworks-context-body { flex: 1; line-height: 1.6; }
+.teachworks-context-body strong { color: var(--teachworks); font-weight: 500; }
+.teachworks-context-body .item {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--text); margin-top: 3px;
+}
+
+/* Conversation preview */
+.conversation-preview {
+  background: var(--obs-2);
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--text-dim);
+  display: flex; flex-direction: column; gap: 4px;
+  max-height: 110px; overflow-y: auto;
+}
+.conv-item { display: flex; gap: 6px; }
+.conv-dir {
+  font-family: 'DM Mono', monospace; font-size: 9px;
+  color: var(--text-dim); flex-shrink: 0; width: 44px;
+}
+.conv-dir.out { color: var(--gold); }
+.conv-body { flex: 1; }
+.conv-preview-empty {
+  color: var(--text-dim); font-style: italic; font-size: 10px; padding: 4px;
+}
+
 .suggested-action {
   margin-top: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
+  display: flex; align-items: flex-start; gap: 7px;
   padding: 8px 10px;
   background: var(--gold-dim);
   border: 1px solid var(--gold-border);
   border-radius: var(--r-sm);
-  font-size: 11px;
-  color: var(--gold-light);
-  line-height: 1.5;
-}
-.no-draft {
-  font-size: 12px;
-  color: var(--red);
-  font-style: italic;
+  font-size: 11px; color: var(--gold-light); line-height: 1.5;
 }
 
-.edit-section { padding: 12px 18px; border-bottom: 1px solid var(--obs-4); }
+/* Edit section */
+.edit-section {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--obs-4);
+}
 .edit-label {
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 7px;
+  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 7px;
 }
 .edit-textarea {
   width: 100%;
-  background: var(--obs-2);
-  border: 1px solid var(--obs-5);
-  border-radius: var(--r-sm);
-  color: var(--text-bright);
+  background: var(--obs-2); border: 1px solid var(--obs-5);
+  border-radius: var(--r-sm); color: var(--text-bright);
   font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 300;
-  line-height: 1.65;
-  padding: 10px 12px;
-  resize: vertical;
-  min-height: 80px;
-  transition: border-color 0.15s;
-  outline: none;
+  font-size: 13px; font-weight: 300; line-height: 1.65;
+  padding: 10px 12px; resize: vertical; min-height: 80px;
+  outline: none; transition: border-color 0.15s;
 }
 .edit-textarea:focus { border-color: var(--gold-border); }
 
+/* Keyboard hints */
+.kb-hints {
+  display: flex; gap: 10px; padding: 8px 18px;
+  font-size: 10px; color: var(--text-dim);
+  border-bottom: 1px solid var(--obs-4);
+}
+.kb {
+  font-family: 'DM Mono', monospace;
+  background: var(--obs-4); padding: 1px 5px;
+  border-radius: 3px; color: var(--text);
+}
+
+/* Actions */
 .card-actions {
   padding: 12px 18px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
 }
-
 .btn {
   font-family: 'DM Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  padding: 8px 16px;
-  border-radius: var(--r-sm);
-  border: 1px solid;
-  cursor: pointer;
-  transition: all 0.15s;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 12px; font-weight: 400;
+  padding: 8px 16px; border-radius: var(--r-sm);
+  border: 1px solid; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
 }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
 .btn-approve {
-  background: var(--green-dim);
-  border-color: var(--green-border);
-  color: var(--green);
+  background: var(--green-dim); border-color: var(--green-border); color: var(--green);
 }
 .btn-approve:hover:not(:disabled) {
-  background: var(--green);
-  color: var(--obsidian);
+  background: var(--green); color: var(--obsidian);
   box-shadow: 0 0 12px rgba(90,175,130,0.3);
 }
 .btn-send {
-  background: var(--gold-dim);
-  border-color: var(--gold-border);
-  color: var(--gold);
+  background: var(--gold-dim); border-color: var(--gold-border); color: var(--gold);
 }
-.btn-send:hover:not(:disabled) {
-  background: var(--gold);
-  color: var(--obsidian);
-}
+.btn-send:hover:not(:disabled) { background: var(--gold); color: var(--obsidian); }
 .btn-ignore {
-  background: transparent;
-  border-color: var(--obs-5);
-  color: var(--text-dim);
+  background: transparent; border-color: var(--obs-5); color: var(--text-dim);
   margin-left: auto;
 }
-.btn-ignore:hover:not(:disabled) {
-  border-color: var(--red-border);
-  color: var(--red);
-}
-.btn-redraft {
-  background: var(--blue-dim);
-  border-color: rgba(90,142,212,0.28);
-  color: var(--blue);
-}
-.btn-redraft:hover:not(:disabled) { background: var(--blue); color: var(--obsidian); }
+.btn-ignore:hover:not(:disabled) { border-color: var(--red-border); color: var(--red); }
 
-/* ── EMPTY STATE ─────────────────────────────── */
+/* Empty state */
 .empty-state {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 24px;
-  text-align: center;
-  gap: 12px;
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 80px 24px; text-align: center; gap: 12px;
 }
 .empty-icon { font-size: 40px; opacity: 0.3; }
 .empty-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 22px;
-  color: var(--text-dim);
-  font-weight: 400;
+  font-size: 22px; color: var(--text-dim); font-weight: 400;
 }
 .empty-sub { font-size: 12px; color: var(--text-dim); max-width: 280px; }
 
-/* ── CONFIG MODAL ────────────────────────────── */
+/* Modal */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(4px);
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
   z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 24px;
 }
 .modal-overlay.hidden { display: none; }
@@ -546,84 +516,86 @@ body {
   border: 1px solid var(--obs-5);
   border-radius: 12px;
   padding: 32px;
-  width: 100%;
-  max-width: 440px;
+  width: 100%; max-width: 480px;
+  max-height: 85vh; overflow-y: auto;
   box-shadow: 0 24px 80px rgba(0,0,0,0.6);
 }
 .modal-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 26px;
-  font-weight: 500;
-  color: var(--cream);
+  font-size: 26px; font-weight: 500; color: var(--cream);
   margin-bottom: 4px;
 }
 .modal-sub {
-  font-size: 12px;
-  color: var(--text-dim);
-  margin-bottom: 24px;
+  font-size: 12px; color: var(--text-dim); margin-bottom: 24px;
 }
 .form-group { margin-bottom: 18px; }
 .form-label {
   font-family: 'DM Mono', monospace;
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  display: block;
-  margin-bottom: 7px;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim); display: block; margin-bottom: 7px;
 }
 .form-input {
   width: 100%;
-  background: var(--obs-2);
-  border: 1px solid var(--obs-5);
-  border-radius: var(--r-sm);
-  color: var(--text-bright);
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  padding: 10px 12px;
-  outline: none;
-  transition: border-color 0.15s;
+  background: var(--obs-2); border: 1px solid var(--obs-5);
+  border-radius: var(--r-sm); color: var(--text-bright);
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  padding: 10px 12px; outline: none; transition: border-color 0.15s;
 }
 .form-input:focus { border-color: var(--gold-border); }
 .form-hint { font-size: 10px; color: var(--text-dim); margin-top: 5px; }
-
 .modal-actions { display: flex; gap: 10px; margin-top: 24px; }
 .btn-primary {
-  flex: 1;
-  background: var(--gold);
-  border: 1px solid var(--gold);
+  flex: 1; background: var(--gold); border: 1px solid var(--gold);
   color: var(--obsidian);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  padding: 10px;
-  border-radius: var(--r-sm);
-  cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  padding: 10px; border-radius: var(--r-sm); cursor: pointer;
   transition: opacity 0.15s;
 }
 .btn-primary:hover { opacity: 0.85; }
 .btn-secondary {
-  background: none;
-  border: 1px solid var(--obs-5);
-  color: var(--text-dim);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  padding: 10px 16px;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  transition: border-color 0.15s;
+  background: none; border: 1px solid var(--obs-5); color: var(--text-dim);
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  padding: 10px 16px; border-radius: var(--r-sm); cursor: pointer;
 }
 .btn-secondary:hover { border-color: var(--obs-6); }
 
-/* ── TOAST ───────────────────────────────────── */
+/* Pending contacts modal */
+.pending-list { display: flex; flex-direction: column; gap: 8px; }
+.pending-item {
+  background: var(--obs-2);
+  border: 1px solid var(--obs-4);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.pending-item-info { flex: 1; min-width: 0; }
+.pending-item-id {
+  font-family: 'DM Mono', monospace; font-size: 10px;
+  color: var(--text-dim); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.pending-item-preview {
+  font-size: 11.5px; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-top: 2px;
+}
+.pending-item-meta {
+  font-size: 10px; color: var(--text-dim); margin-top: 2px;
+}
+.pending-item-action {
+  flex-shrink: 0;
+  font-size: 10px; padding: 4px 10px;
+  background: var(--gold-dim); color: var(--gold);
+  border: 1px solid var(--gold-border); border-radius: 4px;
+  cursor: pointer; text-decoration: none;
+}
+.pending-item-action:hover { background: var(--gold); color: var(--obsidian); }
+
+/* Toast */
 .toast-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
+  position: fixed; bottom: 24px; right: 24px;
   z-index: 200;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: flex; flex-direction: column; gap: 8px;
   pointer-events: none;
 }
 .toast {
@@ -631,24 +603,20 @@ body {
   border: 1px solid var(--obs-6);
   border-radius: var(--r-sm);
   padding: 10px 16px;
-  font-size: 12px;
-  color: var(--text-bright);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 12px; color: var(--text-bright);
+  display: flex; align-items: center; gap: 8px;
   animation: toastIn 0.25s ease;
-  max-width: 300px;
-  box-shadow: var(--shadow);
+  max-width: 320px; box-shadow: var(--shadow);
 }
 @keyframes toastIn {
   from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .toast.success { border-color: var(--green-border); }
-.toast.error   { border-color: var(--red-border); color: var(--red); }
-.toast.info    { border-color: var(--gold-border); }
+.toast.error { border-color: var(--red-border); color: var(--red); }
+.toast.info { border-color: var(--gold-border); }
 
-/* ── LOADING SKELETON ─────────────────────────── */
+/* Loading skeleton */
 .skeleton {
   background: linear-gradient(90deg, var(--obs-3) 25%, var(--obs-4) 50%, var(--obs-3) 75%);
   background-size: 200% 100%;
@@ -661,12 +629,10 @@ body {
   border: 1px solid var(--obs-4);
   border-radius: var(--r);
   padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: flex; flex-direction: column; gap: 12px;
 }
 
-/* ── RESPONSIVE ──────────────────────────────── */
+/* Responsive */
 @media (max-width: 700px) {
   .sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; }
   .main { margin-left: 0; }
@@ -685,31 +651,41 @@ body {
 
     <div class="form-group">
       <label class="form-label">Server URL</label>
-      <input class="form-input" id="cfgApiUrl" type="url"
-        placeholder="https://harland-messaging.railway.app">
-      <div class="form-hint">Your Railway / Render deployment URL</div>
+      <input class="form-input" id="cfgApiUrl" type="url" placeholder="https://harland-messaging.railway.app">
     </div>
     <div class="form-group">
       <label class="form-label">Admin Secret</label>
-      <input class="form-input" id="cfgSecret" type="password"
-        placeholder="your-admin-secret-key">
-      <div class="form-hint">The ADMIN_SECRET value from your .env</div>
+      <input class="form-input" id="cfgSecret" type="password" placeholder="your-admin-secret">
     </div>
     <div class="form-group">
       <label class="form-label">Supabase URL</label>
-      <input class="form-input" id="cfgSupaUrl" type="url"
-        placeholder="https://xxxx.supabase.co">
+      <input class="form-input" id="cfgSupaUrl" type="url" placeholder="https://xxxx.supabase.co">
     </div>
     <div class="form-group">
       <label class="form-label">Supabase Anon Key</label>
-      <input class="form-input" id="cfgSupaKey" type="password"
-        placeholder="eyJhbGc...">
-      <div class="form-hint">For real-time updates only. Use the anon/public key.</div>
+      <input class="form-input" id="cfgSupaKey" type="password" placeholder="eyJhbGc... or sb_publishable_...">
+      <div class="form-hint">Publishable/anon key (not the service role key).</div>
     </div>
 
     <div class="modal-actions">
-      <button class="btn-secondary" onclick="loadDemo()">Preview with demo data</button>
+      <button class="btn-secondary" onclick="closeConfig()">Cancel</button>
       <button class="btn-primary" onclick="saveConfig()">Connect</button>
+    </div>
+  </div>
+</div>
+
+<!-- PENDING CONTACTS MODAL -->
+<div class="modal-overlay hidden" id="pendingModal">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">Unregistered LINE users</div>
+    <div class="modal-sub">These LINE users have sent messages but aren't linked to a family yet. Click to register them.</div>
+
+    <div class="pending-list" id="pendingList">
+      <!-- Populated dynamically -->
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closePendingModal()">Close</button>
     </div>
   </div>
 </div>
@@ -730,66 +706,77 @@ body {
     <div class="sidebar-stats">
       <div class="stat-row">
         <div class="stat-label"><span class="stat-dot dot-red"></span>Urgent</div>
-        <div class="stat-val urgent" id="statUrgent">—</div>
+        <div class="stat-val urgent" id="statUrgent">â</div>
       </div>
       <div class="stat-row">
         <div class="stat-label"><span class="stat-dot dot-amber"></span>Pending</div>
-        <div class="stat-val" id="statPending">—</div>
+        <div class="stat-val" id="statPending">â</div>
       </div>
       <div class="stat-row">
         <div class="stat-label"><span class="stat-dot dot-green"></span>Sent today</div>
-        <div class="stat-val" id="statSent">—</div>
+        <div class="stat-val" id="statSent">â</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-label"><span class="stat-dot dot-teachworks"></span>Teachworks sync</div>
+        <div class="stat-val teachworks" id="statSync">â</div>
       </div>
     </div>
 
     <nav class="sidebar-nav">
-      <div class="nav-label">Tools</div>
-      <a class="nav-btn" href="register.html" target="_blank">
-        <span class="nav-btn-icon">➕</span>
-        <span class="nav-btn-label">Register new family</span>
-      </a>
-      <div class="nav-label">Filter</div>
+      <div class="nav-label">Queue</div>
       <button class="nav-btn active" data-filter="all" onclick="setFilter('all', this)">
-        <span class="nav-btn-icon">📋</span>
+        <span class="nav-btn-icon">â¼</span>
         <span class="nav-btn-label">All pending</span>
         <span class="nav-btn-count" id="countAll">0</span>
       </button>
       <button class="nav-btn" data-filter="urgent" onclick="setFilter('urgent', this)">
-        <span class="nav-btn-icon">🚨</span>
+        <span class="nav-btn-icon">â</span>
         <span class="nav-btn-label">Urgent</span>
         <span class="nav-btn-count" id="countUrgent">0</span>
       </button>
       <button class="nav-btn" data-filter="line" onclick="setFilter('line', this)">
-        <span class="nav-btn-icon">💬</span>
+        <span class="nav-btn-icon">â</span>
         <span class="nav-btn-label">LINE</span>
         <span class="nav-btn-count" id="countLine">0</span>
       </button>
       <button class="nav-btn" data-filter="gmail" onclick="setFilter('gmail', this)">
-        <span class="nav-btn-icon">✉️</span>
+        <span class="nav-btn-icon">â</span>
         <span class="nav-btn-label">Gmail</span>
         <span class="nav-btn-count" id="countGmail">0</span>
       </button>
+
       <div class="nav-label">Topic</div>
       <button class="nav-btn" data-filter="scheduling" onclick="setFilter('scheduling', this)">
-        <span class="nav-btn-icon">📅</span>
+        <span class="nav-btn-icon">â¸</span>
         <span class="nav-btn-label">Scheduling</span>
         <span class="nav-btn-count" id="countScheduling">0</span>
       </button>
       <button class="nav-btn" data-filter="payment" onclick="setFilter('payment', this)">
-        <span class="nav-btn-icon">💳</span>
+        <span class="nav-btn-icon">â¸</span>
         <span class="nav-btn-label">Payment</span>
         <span class="nav-btn-count" id="countPayment">0</span>
       </button>
       <button class="nav-btn" data-filter="academic" onclick="setFilter('academic', this)">
-        <span class="nav-btn-icon">📚</span>
+        <span class="nav-btn-icon">â¸</span>
         <span class="nav-btn-label">Academic</span>
         <span class="nav-btn-count" id="countAcademic">0</span>
+      </button>
+
+      <div class="nav-label">Tools</div>
+      <a class="nav-btn tools" href="register.html" target="_blank">
+        <span class="nav-btn-icon">+</span>
+        <span class="nav-btn-label">Register family</span>
+      </a>
+      <button class="nav-btn tools" id="linkUsersBtn" onclick="openPendingModal()" style="position: relative;">
+        <span class="nav-btn-icon">â³</span>
+        <span class="nav-btn-label">Link LINE users</span>
+        <span class="nav-btn-badge" id="pendingBadge" style="display:none">0</span>
       </button>
     </nav>
 
     <div class="sidebar-footer">
       <button class="config-btn" onclick="openConfig()">
-        ⚙️ &nbsp;Connection settings
+        â &nbsp;Connection settings
       </button>
     </div>
   </aside>
@@ -799,11 +786,31 @@ body {
     <div class="topbar">
       <div class="topbar-title" id="topbarTitle">All Pending</div>
       <div class="topbar-right">
-        <div class="realtime-badge" id="realtimeBadge">
-          <span class="realtime-dot"></span>
+        <div class="pill" id="realtimeBadge">
+          <span class="pill-dot"></span>
           <span id="realtimeLabel">Offline</span>
         </div>
-        <button class="refresh-btn" id="refreshBtn" onclick="loadQueue()" title="Refresh">↻</button>
+        <button class="bulk-btn" id="bulkToggle" onclick="toggleBulkMode()">â« Select</button>
+        <button class="refresh-btn" id="refreshBtn" onclick="loadQueue()" title="Refresh">â»</button>
+      </div>
+    </div>
+
+    <!-- Pending contacts banner -->
+    <div class="pending-banner hidden" id="pendingBanner">
+      <div class="pending-banner-icon">?</div>
+      <div class="pending-banner-body">
+        <strong id="pendingBannerCount">0 unregistered LINE users</strong> have sent messages but aren't linked to a family yet. Register them to improve Claude's draft quality.
+      </div>
+      <a class="pending-banner-link" onclick="openPendingModal()">Link contacts â</a>
+    </div>
+
+    <!-- Bulk action bar -->
+    <div class="bulk-bar hidden" id="bulkBar">
+      <strong id="bulkCount">0 selected</strong>
+      <span id="bulkContext"></span>
+      <div class="bulk-actions">
+        <button class="bulk-btn-small" onclick="deselectAll()">Deselect all</button>
+        <button class="bulk-btn-small primary" onclick="bulkIgnore()">Ignore selected</button>
       </div>
     </div>
 
@@ -814,24 +821,23 @@ body {
 </div>
 
 <script>
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // STATE
-// ─────────────────────────────────────────────
-let config = {
-  apiUrl: '',
-  secret: '',
-  supaUrl: '',
-  supaKey: ''
-};
+// âââââââââââââââââââââââââââââââââââââââââââââ
+let config = { apiUrl: '', secret: '', supaUrl: '', supaKey: '' };
 let messages = [];
+let pendingContacts = [];
 let activeFilter = 'all';
 let supabaseClient = null;
 let sentTodayCount = 0;
-let demoMode = false;
+let lastSyncTime = null;
+let bulkMode = false;
+let selectedIds = new Set();
+let focusedIndex = -1;
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // INIT
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('harland-review-config');
   if (saved) {
@@ -839,27 +845,33 @@ window.addEventListener('DOMContentLoaded', () => {
     closeConfig();
     initSupabase();
     loadQueue();
+    loadPendingContacts();
+    loadSyncStatus();
+    loadSentTodayCount();
   } else {
     showConfig();
   }
+
+  // Global keyboard shortcuts
+  document.addEventListener('keydown', handleKeyboard);
 });
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // CONFIG
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function showConfig() { document.getElementById('configModal').classList.remove('hidden'); }
 function closeConfig() { document.getElementById('configModal').classList.add('hidden'); }
 function openConfig() {
-  document.getElementById('cfgApiUrl').value  = config.apiUrl  || '';
-  document.getElementById('cfgSecret').value  = config.secret  || '';
+  document.getElementById('cfgApiUrl').value = config.apiUrl || '';
+  document.getElementById('cfgSecret').value = config.secret || '';
   document.getElementById('cfgSupaUrl').value = config.supaUrl || '';
   document.getElementById('cfgSupaKey').value = config.supaKey || '';
   showConfig();
 }
 
 function saveConfig() {
-  config.apiUrl  = document.getElementById('cfgApiUrl').value.trim().replace(/\/$/, '');
-  config.secret  = document.getElementById('cfgSecret').value.trim();
+  config.apiUrl = document.getElementById('cfgApiUrl').value.trim().replace(/\/$/, '');
+  config.secret = document.getElementById('cfgSecret').value.trim();
   config.supaUrl = document.getElementById('cfgSupaUrl').value.trim();
   config.supaKey = document.getElementById('cfgSupaKey').value.trim();
 
@@ -868,37 +880,30 @@ function saveConfig() {
   }
 
   localStorage.setItem('harland-review-config', JSON.stringify(config));
-  demoMode = false;
   closeConfig();
   initSupabase();
   loadQueue();
+  loadPendingContacts();
+  loadSyncStatus();
+  loadSentTodayCount();
 }
 
-// ─────────────────────────────────────────────
-// SUPABASE REALTIME
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// SUPABASE REALTIME + QUERIES
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function initSupabase() {
   if (!config.supaUrl || !config.supaKey) return;
   try {
     supabaseClient = supabase.createClient(config.supaUrl, config.supaKey);
+
+    // Subscribe to new messages
     supabaseClient
       .channel('messages-queue')
       .on('postgres_changes', {
         event: 'INSERT', schema: 'public', table: 'messages',
         filter: 'status=eq.pending'
       }, payload => {
-        const newMsg = payload.new;
-        // Parse metadata if claude_draft is JSON
-        const parsed = tryParseJSON(newMsg.claude_draft);
-        const enriched = {
-          ...newMsg,
-          _draft: parsed ? parsed.draft : newMsg.claude_draft,
-          _urgent: parsed ? parsed.urgent : newMsg.urgency_flag,
-          _topic: parsed ? parsed.topic : null,
-          _suggested_action: parsed ? parsed.suggested_action : null,
-          _family_name: newMsg.metadata?.display_name || 'Unknown',
-          _edit: parsed ? parsed.draft : newMsg.claude_draft
-        };
+        const enriched = enrichMessage(payload.new);
         messages.unshift(enriched);
         renderQueue();
         updateCounts();
@@ -912,16 +917,72 @@ function initSupabase() {
           label.textContent = 'Live';
         }
       });
-  } catch(e) {
+  } catch (e) {
     console.warn('Supabase realtime init failed:', e);
   }
 }
 
-// ─────────────────────────────────────────────
-// LOAD QUEUE FROM API
-// ─────────────────────────────────────────────
+async function loadPendingContacts() {
+  if (!supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('pending_contacts')
+      .select('*')
+      .limit(20);
+
+    if (error) { console.warn('pending_contacts not available yet'); return; }
+
+    pendingContacts = data || [];
+    updatePendingBanner();
+  } catch (e) {
+    console.warn('Load pending contacts failed:', e);
+  }
+}
+
+async function loadSyncStatus() {
+  if (!supabaseClient) return;
+  try {
+    const { data } = await supabaseClient
+      .from('sync_log')
+      .select('completed_at, source')
+      .eq('source', 'teachworks')
+      .order('started_at', { ascending: false })
+      .limit(1);
+
+    if (data && data.length && data[0].completed_at) {
+      lastSyncTime = new Date(data[0].completed_at);
+      const hours = lastSyncTime.getHours().toString().padStart(2, '0');
+      const mins = lastSyncTime.getMinutes().toString().padStart(2, '0');
+      setText('statSync', `${hours}:${mins}`);
+    } else {
+      setText('statSync', 'â');
+    }
+  } catch (e) {
+    setText('statSync', 'â');
+  }
+}
+
+async function loadSentTodayCount() {
+  if (!supabaseClient) return;
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const { count } = await supabaseClient
+      .from('messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'sent')
+      .gte('sent_at', today.toISOString());
+    sentTodayCount = count || 0;
+    setText('statSent', sentTodayCount);
+  } catch (e) {
+    setText('statSent', 'â');
+  }
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// LOAD QUEUE
+// âââââââââââââââââââââââââââââââââââââââââââââ
 async function loadQueue() {
-  if (demoMode) { renderQueue(); return; }
   if (!config.apiUrl || !config.secret) { showConfig(); return; }
 
   const btn = document.getElementById('refreshBtn');
@@ -934,10 +995,10 @@ async function loadQueue() {
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    messages = (data.messages || []).map(m => enrichMessage(m));
+    messages = (data.messages || []).map(enrichMessage);
     renderQueue();
     updateCounts();
-  } catch(err) {
+  } catch (err) {
     toast(`Failed to load queue: ${err.message}`, 'error');
     showError();
   } finally {
@@ -947,25 +1008,42 @@ async function loadQueue() {
 
 function enrichMessage(m) {
   const parsed = tryParseJSON(m.claude_draft);
+  const familyName = m.metadata?.display_name || formatUnknownId(m.sender_id);
+  const familySub = m.metadata?.family_subtitle || null;
+
+  // Derive Teachworks context from metadata (populated by server)
+  const teachworksCtx = m.metadata?.teachworks_context || null;
+
   return {
     ...m,
     _draft: parsed ? parsed.draft : m.claude_draft,
     _urgent: parsed ? parsed.urgent : m.urgency_flag,
     _topic: parsed ? parsed.topic : (m.metadata?.topic || null),
+    _confidence: parsed?.confidence ?? m.metadata?.confidence ?? null,
     _suggested_action: parsed ? parsed.suggested_action : null,
-    _family_name: m.metadata?.display_name || m.sender_id || 'Unknown',
-    _edit: parsed ? parsed.draft : (m.claude_draft || '')
+    _teachworks_context: teachworksCtx,
+    _conversation_preview: m.metadata?.conversation_preview || [],
+    _family_name: familyName,
+    _family_sub: familySub,
+    _edit: parsed ? parsed.draft : (m.claude_draft || ''),
+    _draft_failed: m.draft_status === 'failed'
   };
 }
 
 function tryParseJSON(str) {
-  if (!str || !str.trim().startsWith('{')) return null;
+  if (!str || typeof str !== 'string' || !str.trim().startsWith('{')) return null;
   try { return JSON.parse(str); } catch { return null; }
 }
 
-// ─────────────────────────────────────────────
+function formatUnknownId(id) {
+  if (!id) return 'Unknown';
+  if (id.startsWith('U')) return id.slice(0, 7) + '...';
+  return id;
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // FILTER
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 const filterTitles = {
   all: 'All Pending', urgent: 'Urgent Messages',
   line: 'LINE Messages', gmail: 'Gmail Messages',
@@ -975,25 +1053,26 @@ const filterTitles = {
 
 function setFilter(filter, btn) {
   activeFilter = filter;
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn[data-filter]').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('topbarTitle').textContent = filterTitles[filter] || filter;
+  focusedIndex = -1;
   renderQueue();
 }
 
 function filteredMessages() {
   return messages.filter(m => {
-    if (activeFilter === 'all')     return true;
-    if (activeFilter === 'urgent')  return m._urgent;
-    if (activeFilter === 'line')    return m.channel === 'line';
-    if (activeFilter === 'gmail')   return m.channel === 'gmail';
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'urgent') return m._urgent;
+    if (activeFilter === 'line') return m.channel === 'line';
+    if (activeFilter === 'gmail') return m.channel === 'gmail';
     return m._topic === activeFilter;
   });
 }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // RENDER
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function renderQueue() {
   const q = document.getElementById('queue');
   const visible = filteredMessages();
@@ -1001,7 +1080,7 @@ function renderQueue() {
   if (!visible.length) {
     q.innerHTML = `
       <div class="empty-state">
-        <div class="empty-icon">✓</div>
+        <div class="empty-icon">â</div>
         <div class="empty-title">Queue is clear</div>
         <div class="empty-sub">No pending messages match the current filter.</div>
       </div>`;
@@ -1015,64 +1094,114 @@ function renderQueue() {
     return new Date(a.received_at) - new Date(b.received_at);
   });
 
-  q.innerHTML = sorted.map(m => cardHTML(m)).join('');
+  q.innerHTML = sorted.map((m, i) => cardHTML(m, i)).join('');
+  updateBulkBar();
 }
 
-function cardHTML(m) {
+function confidenceBadgeClass(c) {
+  if (c == null) return '';
+  if (c >= 0.85) return 'high';
+  if (c >= 0.6) return 'med';
+  return 'low';
+}
+
+function cardHTML(m, index) {
   const timeAgo = relativeTime(m.received_at);
   const topicBadge = m._topic
     ? `<span class="badge badge-${m._topic}">${m._topic}</span>` : '';
   const urgentBadge = m._urgent
-    ? `<span class="badge badge-urgent">🚨 Urgent</span>` : '';
+    ? `<span class="badge badge-urgent">â Urgent</span>` : '';
   const channelBadge = `<span class="badge badge-${m.channel}">${m.channel === 'line' ? 'LINE' : 'Gmail'}</span>`;
+  const confBadge = m._confidence != null
+    ? `<span class="badge badge-confidence ${confidenceBadgeClass(m._confidence)}">conf ${m._confidence.toFixed(2)}</span>`
+    : '';
+  const familySub = m._family_sub
+    ? `<span class="card-family-sub">Â· ${escHtml(m._family_sub)}</span>`
+    : '';
 
-  const draftSection = m._draft
-    ? `<div class="draft-text">${escHtml(m._draft)}</div>
-       ${m._suggested_action
-         ? `<div class="suggested-action">💡 <span>${escHtml(m._suggested_action)}</span></div>`
-         : ''}`
-    : `<div class="no-draft">Draft generation failed — reply manually or re-draft.</div>`;
+  // Teachworks context panel
+  const tw = m._teachworks_context;
+  const teachworksHtml = tw && (tw.student || tw.next_lesson || tw.teacher)
+    ? `<div class="teachworks-context">
+         <span class="teachworks-context-icon">â</span>
+         <div class="teachworks-context-body">
+           <strong>Student context</strong>
+           ${tw.student ? `<span class="item">â¦ ${escHtml(tw.student)}</span>` : ''}
+           ${tw.next_lesson ? `<span class="item">â¦ Next lesson: ${escHtml(tw.next_lesson)}</span>` : ''}
+           ${tw.teacher ? `<span class="item">â¦ ${escHtml(tw.teacher)}</span>` : ''}
+         </div>
+       </div>` : '';
 
-  const hasDraft = !!m._draft;
+  // Conversation preview
+  const conv = m._conversation_preview || [];
+  const convHtml = conv.length > 0
+    ? `<div class="conversation-preview">
+         ${conv.map(c => `
+           <div class="conv-item">
+             <span class="conv-dir ${c.direction === 'outbound' ? 'out' : ''}">${formatConvDate(c.at)}</span>
+             <span class="conv-body">${escHtml((c.text || '').slice(0, 100))}${c.text && c.text.length > 100 ? '...' : ''}</span>
+           </div>
+         `).join('')}
+       </div>` : '';
+
+  // Draft section
+  const draftSection = m._draft_failed
+    ? `<div class="no-draft">Draft generation failed â reply manually.</div>`
+    : m._draft
+      ? `<div class="draft-text">${escHtml(m._draft)}</div>
+         ${teachworksHtml}
+         ${m._suggested_action ? `<div class="suggested-action">â <span>${escHtml(m._suggested_action)}</span></div>` : ''}
+         ${convHtml}`
+      : `<div class="no-draft">Draft still generating â refresh in a moment.</div>`;
+
+  const hasDraft = !!m._draft && !m._draft_failed;
+  const isSelected = selectedIds.has(m.id);
+  const isFocused = index === focusedIndex;
 
   return `
-  <div class="card ${m._urgent ? 'urgent' : ''}" id="card-${m.id}">
+  <div class="card ${m._urgent ? 'urgent' : ''} ${bulkMode ? 'selectable' : ''} ${isSelected ? 'selected' : ''} ${isFocused ? 'focused' : ''}" id="card-${m.id}" data-index="${index}">
+    <div class="card-checkbox ${bulkMode ? '' : 'hidden'}" onclick="toggleSelect('${m.id}')"></div>
+
     <div class="card-header">
       ${urgentBadge}
       ${channelBadge}
       ${topicBadge}
-      <span class="card-family">${escHtml(m._family_name)}</span>
+      ${confBadge}
+      <span class="card-family">${escHtml(m._family_name)}${familySub}</span>
       <span class="card-time">${timeAgo}</span>
     </div>
 
     <div class="card-section">
-      <div class="section-eyebrow"><span class="icon">👤</span> Parent said</div>
+      <div class="section-eyebrow"><span class="icon">â</span> Parent said</div>
       <div class="inbound-text">${escHtml(m.raw_content || '')}</div>
     </div>
 
     <div class="card-section">
-      <div class="section-eyebrow"><span class="icon">🤖</span> Claude's draft</div>
+      <div class="section-eyebrow"><span class="icon">â</span> Claude's draft</div>
       ${draftSection}
     </div>
 
+    ${hasDraft ? `
     <div class="edit-section">
       <div class="edit-label">Edit reply</div>
       <textarea class="edit-textarea" id="edit-${m.id}"
-        placeholder="Edit Claude's draft here before sending…"
+        placeholder="Edit Claude's draft here before sendingâ¦"
         oninput="syncEdit('${m.id}', this.value)">${escHtml(m._edit || '')}</textarea>
     </div>
 
+    <div class="kb-hints">
+      <span><span class="kb">A</span> approve</span>
+      <span><span class="kb">E</span> focus editor</span>
+      <span><span class="kb">I</span> ignore</span>
+      <span><span class="kb">â</span>/<span class="kb">â</span> navigate</span>
+    </div>
+    ` : ''}
+
     <div class="card-actions">
       ${hasDraft
-        ? `<button class="btn btn-approve" onclick="approveDraft('${m.id}')" title="Send Claude's draft as-is">
-             ✓ &nbsp;Approve draft
-           </button>
-           <button class="btn btn-send" onclick="sendEdited('${m.id}')" title="Send your edited version">
-             ✉ &nbsp;Send edited
-           </button>`
-        : `<button class="btn btn-redraft" onclick="redraft('${m.id}')">
-             ↺ &nbsp;Re-draft
-           </button>`}
+        ? `<button class="btn btn-approve" onclick="approveDraft('${m.id}')">â Approve draft</button>
+           <button class="btn btn-send" onclick="sendEdited('${m.id}')">â Send edited</button>`
+        : ''}
       <button class="btn btn-ignore" onclick="ignore('${m.id}')">Ignore</button>
     </div>
   </div>`;
@@ -1083,34 +1212,102 @@ function syncEdit(id, val) {
   if (m) m._edit = val;
 }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// BULK MODE
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function toggleBulkMode() {
+  bulkMode = !bulkMode;
+  const btn = document.getElementById('bulkToggle');
+  btn.classList.toggle('active', bulkMode);
+  if (!bulkMode) selectedIds.clear();
+  renderQueue();
+  updateBulkBar();
+}
+
+function toggleSelect(id) {
+  if (selectedIds.has(id)) selectedIds.delete(id);
+  else selectedIds.add(id);
+  const card = document.getElementById(`card-${id}`);
+  if (card) card.classList.toggle('selected', selectedIds.has(id));
+  updateBulkBar();
+}
+
+function deselectAll() {
+  selectedIds.clear();
+  document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+  updateBulkBar();
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulkBar');
+  if (!bulkMode || selectedIds.size === 0) {
+    bar.classList.add('hidden');
+    return;
+  }
+  bar.classList.remove('hidden');
+  document.getElementById('bulkCount').textContent = `${selectedIds.size} selected`;
+
+  // Context â describe what's selected
+  const selected = messages.filter(m => selectedIds.has(m.id));
+  const topics = [...new Set(selected.map(m => m._topic).filter(Boolean))];
+  const channels = [...new Set(selected.map(m => m.channel))];
+  const ctx = [];
+  if (channels.length === 1) ctx.push(`all ${channels[0]}`);
+  if (topics.length === 1) ctx.push(`topic: ${topics[0]}`);
+  document.getElementById('bulkContext').textContent = ctx.length ? `Â· ${ctx.join(', ')}` : '';
+}
+
+async function bulkIgnore() {
+  if (selectedIds.size === 0) return;
+  if (!confirm(`Ignore ${selectedIds.size} message${selectedIds.size > 1 ? 's' : ''}?`)) return;
+
+  const ids = [...selectedIds];
+  let succeeded = 0, failed = 0;
+
+  for (const id of ids) {
+    try {
+      const res = await fetch(`${config.apiUrl}/review/${id}/ignore`, {
+        method: 'POST',
+        headers: { 'x-admin-secret': config.secret }
+      });
+      if (res.ok) {
+        removeCard(id);
+        messages = messages.filter(m => m.id !== id);
+        selectedIds.delete(id);
+        succeeded++;
+      } else {
+        failed++;
+      }
+    } catch (e) {
+      failed++;
+    }
+  }
+
+  updateCounts();
+  updateBulkBar();
+  toast(`Ignored ${succeeded}${failed > 0 ? ` (${failed} failed)` : ''}`,
+    failed > 0 ? 'error' : 'success');
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // ACTIONS
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 async function approveDraft(id) {
-  await doAction(id, `${config.apiUrl}/review/${id}/approve`, {}, 'Reply sent ✓');
+  await doAction(id, `${config.apiUrl}/review/${id}/approve`, {}, 'Reply sent â');
 }
 
 async function sendEdited(id) {
   const m = messages.find(x => x.id === id);
   const finalReply = m?._edit?.trim();
   if (!finalReply) { toast('Reply text cannot be empty', 'error'); return; }
-  await doAction(id, `${config.apiUrl}/review/${id}/edit`, { finalReply }, 'Edited reply sent ✓');
+  await doAction(id, `${config.apiUrl}/review/${id}/edit`, { finalReply }, 'Edited reply sent â');
 }
 
 async function ignore(id) {
   await doAction(id, `${config.apiUrl}/review/${id}/ignore`, {}, 'Message ignored');
 }
 
-async function redraft(id) {
-  const m = messages.find(x => x.id === id);
-  if (!m) return;
-  // Re-trigger draft via the re-draft endpoint (to be built) or just notify
-  toast('Re-draft triggered — refresh in a moment', 'info');
-}
-
 async function doAction(id, url, body, successMsg) {
-  if (demoMode) { removeCard(id); toast(successMsg, 'success'); return; }
-
   setCardBusy(id, true);
   try {
     const res = await fetch(url, {
@@ -1127,9 +1324,12 @@ async function doAction(id, url, body, successMsg) {
     }
     removeCard(id);
     messages = messages.filter(m => m.id !== id);
+    selectedIds.delete(id);
     updateCounts();
+    sentTodayCount++;
+    setText('statSent', sentTodayCount);
     toast(successMsg, 'success');
-  } catch(err) {
+  } catch (err) {
     toast(`Action failed: ${err.message}`, 'error');
     setCardBusy(id, false);
   }
@@ -1148,52 +1348,141 @@ function removeCard(id) {
   card.addEventListener('animationend', () => {
     card.remove();
     const q = document.getElementById('queue');
-    if (!q.querySelector('.card')) {
-      renderQueue(); // show empty state
-    }
+    if (!q.querySelector('.card')) renderQueue();
   }, { once: true });
 }
 
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// KEYBOARD SHORTCUTS
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function handleKeyboard(e) {
+  // Ignore when typing in inputs or textareas
+  const t = e.target;
+  if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') return;
+
+  const cards = document.querySelectorAll('.card[id^="card-"]');
+  if (!cards.length) return;
+
+  const focusedCard = focusedIndex >= 0 ? cards[focusedIndex] : cards[0];
+  const focusedId = focusedCard?.id.replace('card-', '');
+
+  switch (e.key.toLowerCase()) {
+    case 'arrowdown':
+    case 'j':
+      e.preventDefault();
+      focusedIndex = Math.min((focusedIndex < 0 ? 0 : focusedIndex + 1), cards.length - 1);
+      updateFocus();
+      break;
+    case 'arrowup':
+    case 'k':
+      e.preventDefault();
+      focusedIndex = Math.max(focusedIndex - 1, 0);
+      updateFocus();
+      break;
+    case 'a':
+      if (focusedId) { e.preventDefault(); approveDraft(focusedId); }
+      break;
+    case 'i':
+      if (focusedId) { e.preventDefault(); ignore(focusedId); }
+      break;
+    case 'e':
+      if (focusedId) {
+        e.preventDefault();
+        const ta = document.getElementById(`edit-${focusedId}`);
+        ta?.focus();
+      }
+      break;
+  }
+}
+
+function updateFocus() {
+  document.querySelectorAll('.card.focused').forEach(c => c.classList.remove('focused'));
+  const cards = document.querySelectorAll('.card[id^="card-"]');
+  if (focusedIndex >= 0 && cards[focusedIndex]) {
+    cards[focusedIndex].classList.add('focused');
+    cards[focusedIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// PENDING CONTACTS MODAL
+// âââââââââââââââââââââââââââââââââââââââââââââ
+function updatePendingBanner() {
+  const banner = document.getElementById('pendingBanner');
+  const count = pendingContacts.length;
+  const badge = document.getElementById('pendingBadge');
+
+  if (count > 0) {
+    banner.classList.remove('hidden');
+    document.getElementById('pendingBannerCount').textContent =
+      `${count} unregistered LINE user${count > 1 ? 's' : ''}`;
+    badge.style.display = 'inline-block';
+    badge.textContent = count;
+  } else {
+    banner.classList.add('hidden');
+    badge.style.display = 'none';
+  }
+}
+
+function openPendingModal() {
+  if (!pendingContacts.length) {
+    toast('No unregistered users right now', 'info');
+    return;
+  }
+
+  const list = document.getElementById('pendingList');
+  list.innerHTML = pendingContacts.map(p => `
+    <div class="pending-item">
+      <div class="pending-item-info">
+        <div class="pending-item-id">${escHtml(p.line_user_id)}</div>
+        <div class="pending-item-preview">${escHtml((p.last_message_preview || '').slice(0, 100))}</div>
+        <div class="pending-item-meta">
+          ${p.message_count} message${p.message_count > 1 ? 's' : ''} Â· last: ${relativeTime(p.last_message_at)}
+        </div>
+      </div>
+      <a class="pending-item-action" href="register.html?line_user_id=${encodeURIComponent(p.line_user_id)}" target="_blank">Register â</a>
+    </div>
+  `).join('');
+
+  document.getElementById('pendingModal').classList.remove('hidden');
+}
+
+function closePendingModal() {
+  document.getElementById('pendingModal').classList.add('hidden');
+}
+
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // COUNTS
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function updateCounts() {
-  const all   = messages.length;
-  const urg   = messages.filter(m => m._urgent).length;
-  const line  = messages.filter(m => m.channel === 'line').length;
-  const gmail = messages.filter(m => m.channel === 'gmail').length;
-  const sched = messages.filter(m => m._topic === 'scheduling').length;
-  const pay   = messages.filter(m => m._topic === 'payment').length;
-  const acad  = messages.filter(m => m._topic === 'academic').length;
+  setCount('countAll', messages.length);
+  setCount('countUrgent', messages.filter(m => m._urgent).length);
+  setCount('countLine', messages.filter(m => m.channel === 'line').length);
+  setCount('countGmail', messages.filter(m => m.channel === 'gmail').length);
+  setCount('countScheduling', messages.filter(m => m._topic === 'scheduling').length);
+  setCount('countPayment', messages.filter(m => m._topic === 'payment').length);
+  setCount('countAcademic', messages.filter(m => m._topic === 'academic').length);
 
-  setCount('countAll', all);
-  setCount('countUrgent', urg);
-  setCount('countLine', line);
-  setCount('countGmail', gmail);
-  setCount('countScheduling', sched);
-  setCount('countPayment', pay);
-  setCount('countAcademic', acad);
-
-  setText('statUrgent', urg || '0');
-  setText('statPending', all || '0');
-  if (!demoMode) setText('statSent', sentTodayCount || '0');
+  setText('statUrgent', messages.filter(m => m._urgent).length || '0');
+  setText('statPending', messages.length || '0');
 }
 
 function setCount(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;
 }
+
 function setText(id, val) {
   const el = document.getElementById(id);
   if (el) el.textContent = val;
 }
 
-// ─────────────────────────────────────────────
-// SKELETON / ERROR STATES
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
+// STATES
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function showSkeletons() {
   const q = document.getElementById('queue');
-  q.innerHTML = [1,2].map(() => `
+  q.innerHTML = [1, 2].map(() => `
     <div class="skeleton-card">
       <div style="display:flex;gap:8px;margin-bottom:4px">
         <div class="skeleton" style="width:60px;height:18px"></div>
@@ -1209,113 +1498,41 @@ function showSkeletons() {
 function showError() {
   document.getElementById('queue').innerHTML = `
     <div class="empty-state">
-      <div class="empty-icon">⚠️</div>
+      <div class="empty-icon">â </div>
       <div class="empty-title">Could not load queue</div>
       <div class="empty-sub">Check your server URL and admin secret in connection settings.</div>
     </div>`;
 }
 
-// ─────────────────────────────────────────────
-// DEMO MODE
-// ─────────────────────────────────────────────
-function loadDemo() {
-  demoMode = true;
-  closeConfig();
-  sentTodayCount = 4;
-  messages = DEMO_MESSAGES.map(m => ({ ...m }));
-  renderQueue();
-  updateCounts();
-  setText('statSent', '4');
-  document.getElementById('realtimeBadge').classList.add('connected');
-  document.getElementById('realtimeLabel').textContent = 'Demo';
-  toast('Loaded demo data', 'info');
-}
-
-const now = new Date();
-const minsAgo = n => new Date(now - n * 60000).toISOString();
-
-const DEMO_MESSAGES = [
-  {
-    id: 'demo-1', channel: 'line', direction: 'inbound', status: 'pending',
-    received_at: minsAgo(3), urgency_flag: true,
-    raw_content: '老師您好！請問這週四下午4點的課可以改到週五同一時間嗎？我們有臨時的家庭活動，非常抱歉。',
-    claude_draft: JSON.stringify({
-      draft: '您好！感謝您事先告知。關於這週四課程的調整，我們會立即與任課老師確認週五下午4點的時間是否可行，並在今天下班前回覆您。如有任何不便，敬請見諒，我們會盡力配合您的需求。',
-      urgent: true, topic: 'scheduling',
-      suggested_action: 'Confirm Mr. Judkins availability on Friday 4pm before sending.'
-    }),
-    _urgent: true, _topic: 'scheduling', _family_name: '陳小泰媽',
-    _draft: '您好！感謝您事先告知。關於這週四課程的調整，我們會立即與任課老師確認週五下午4點的時間是否可行，並在今天下班前回覆您。如有任何不便，敬請見諒，我們會盡力配合您的需求。',
-    _suggested_action: 'Confirm Mr. Judkins availability on Friday 4pm before sending.',
-    _edit: '您好！感謝您事先告知。關於這週四課程的調整，我們會立即與任課老師確認週五下午4點的時間是否可行，並在今天下班前回覆您。如有任何不便，敬請見諒，我們會盡力配合您的需求。'
-  },
-  {
-    id: 'demo-2', channel: 'line', direction: 'inbound', status: 'pending',
-    received_at: minsAgo(18), urgency_flag: false,
-    raw_content: 'Hi, just wanted to check in on how Emily is progressing with her SAT prep. Is there anything we should be focusing on at home?',
-    claude_draft: JSON.stringify({
-      draft: "Hi! Emily has been making excellent progress in her SAT prep — she's showing particular strength in Reading comprehension and is steadily building her Math skills in the current unit. For home practice, we'd recommend 20–30 minutes of Khan Academy SAT Math daily, focusing on the areas Mr. Judkins highlights after each lesson. We'll send a full progress update after next week's session.",
-      urgent: false, topic: 'academic',
-      suggested_action: "Check Emily's latest lesson notes from Mr. Judkins before sending to ensure accuracy."
-    }),
-    _urgent: false, _topic: 'academic', _family_name: 'Wilson Family',
-    _draft: "Hi! Emily has been making excellent progress in her SAT prep — she's showing particular strength in Reading comprehension and is steadily building her Math skills in the current unit. For home practice, we'd recommend 20–30 minutes of Khan Academy SAT Math daily, focusing on the areas Mr. Judkins highlights after each lesson. We'll send a full progress update after next week's session.",
-    _suggested_action: "Check Emily's latest lesson notes from Mr. Judkins before sending.",
-    _edit: "Hi! Emily has been making excellent progress in her SAT prep — she's showing particular strength in Reading comprehension and is steadily building her Math skills in the current unit. For home practice, we'd recommend 20–30 minutes of Khan Academy SAT Math daily, focusing on the areas Mr. Judkins highlights after each lesson. We'll send a full progress update after next week's session."
-  },
-  {
-    id: 'demo-3', channel: 'gmail', direction: 'inbound', status: 'pending',
-    received_at: minsAgo(47), urgency_flag: false,
-    raw_content: '請問本月的學費繳費截止日是什麼時候？我想確認一下，謝謝。',
-    claude_draft: JSON.stringify({
-      draft: '您好，感謝您的來訊。本月學費繳費截止日為本月最後一個工作天。您可透過銀行轉帳或現場繳費，帳號資訊請參考入學時提供的資料。若有任何疑問，歡迎隨時與我們聯繫。',
-      urgent: false, topic: 'payment',
-      suggested_action: 'Verify the exact payment deadline from the system before confirming.'
-    }),
-    _urgent: false, _topic: 'payment', _family_name: '林詠心媽',
-    _draft: '您好，感謝您的來訊。本月學費繳費截止日為本月最後一個工作天。您可透過銀行轉帳或現場繳費，帳號資訊請參考入學時提供的資料。若有任何疑問，歡迎隨時與我們聯繫。',
-    _suggested_action: 'Verify the exact payment deadline from the system before confirming.',
-    _edit: '您好，感謝您的來訊。本月學費繳費截止日為本月最後一個工作天。您可透過銀行轉帳或現場繳費，帳號資訊請參考入學時提供的資料。若有任何疑問，歡迎隨時與我們聯繫。'
-  },
-  {
-    id: 'demo-4', channel: 'line', direction: 'inbound', status: 'pending',
-    received_at: minsAgo(92), urgency_flag: false,
-    raw_content: 'Good morning. Marcus had a great lesson yesterday — he seemed really engaged for the first time in a while. Thank you!',
-    claude_draft: JSON.stringify({
-      draft: "Good morning! That's wonderful to hear — we're so glad Marcus had a breakthrough session. His teacher noted his increased focus and enthusiasm too. We'll make sure to build on that momentum in the upcoming lessons. Thank you for sharing this with us!",
-      urgent: false, topic: 'general', suggested_action: null
-    }),
-    _urgent: false, _topic: 'general', _family_name: 'Thompson Family',
-    _draft: "Good morning! That's wonderful to hear — we're so glad Marcus had a breakthrough session. His teacher noted his increased focus and enthusiasm too. We'll make sure to build on that momentum in the upcoming lessons. Thank you for sharing this with us!",
-    _suggested_action: null,
-    _edit: "Good morning! That's wonderful to hear — we're so glad Marcus had a breakthrough session. His teacher noted his increased focus and enthusiasm too. We'll make sure to build on that momentum in the upcoming lessons. Thank you for sharing this with us!"
-  }
-];
-
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 // UTILITIES
-// ─────────────────────────────────────────────
+// âââââââââââââââââââââââââââââââââââââââââââââ
 function relativeTime(iso) {
-  if (!iso) return '—';
+  if (!iso) return 'â';
   const diff = (Date.now() - new Date(iso)) / 1000;
-  if (diff < 60)   return 'just now';
+  if (diff < 60) return 'just now';
   if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
   return new Date(iso).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
 }
 
+function formatConvDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-GB', { day:'numeric', month:'short' });
+}
+
 function escHtml(str) {
-  if (!str) return '';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-            .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  if (str == null) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+              .replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
 
 function toast(msg, type = 'info') {
   const container = document.getElementById('toastContainer');
   const el = document.createElement('div');
   el.className = `toast ${type}`;
-  const icons = { success: '✓', error: '✕', info: '·' };
-  el.innerHTML = `<span>${icons[type]||'·'}</span> ${escHtml(msg)}`;
+  const icons = { success: 'â', error: 'â', info: 'Â·' };
+  el.innerHTML = `<span>${icons[type]||'Â·'}</span> ${escHtml(msg)}`;
   container.appendChild(el);
   setTimeout(() => el.remove(), 3500);
 }
