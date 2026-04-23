@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harland HQ — Register Family</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --gold:#C9A84C; --gold-light:#E8C97A; --gold-pale:#F5EDDA; --gold-dark:#A07820;
+  --obsidian:#0D0D0F; --ink:#1A1A1F; --slate:#4A4A56; --mist:#9A9AA8;
+  --cream:#F8F5EF; --white:#FFFFFF;
+  --green:#2E7D5C; --green-pale:#EDF7F2;
+  --red:#B83030; --red-pale:#FEF0F0;
+  --amber:#B86A00; --amber-pale:#FFF8EC;
+  --line:#06C755; --line-pale:#EDFBF2;
+  --border:#E8E4DC; --border-light:#F0EDE6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'DM Sans',-apple-system,sans-serif;
+  background:var(--cream);color:var(--ink);font-size:13px;line-height:1.6;
+  min-height:100vh;padding:40px 20px;
+}
+.wrap{max-width:780px;margin:0 auto}
+.header{background:var(--obsidian);color:white;border-radius:14px 14px 0 0;padding:26px 32px;position:relative;overflow:hidden;}
+.header::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7A5010,var(--gold) 40%,var(--gold-light) 60%,var(--gold) 80%,#7A5010);}
+.hd-eye{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:6px}
+.hd-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:500;line-height:1.1;margin-bottom:4px}
+.hd-title em{color:var(--gold-light);font-style:italic}
+.hd-sub{font-size:12px;color:rgba(255,255,255,.5);max-width:500px;line-height:1.6}
+.conn-pill{position:absolute;top:26px;right:32px;display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.15);border-radius:20px;font-size:10px;color:rgba(255,255,255,.6);cursor:pointer;}
+.conn-pill .dot{width:6px;height:6px;border-radius:50%;background:#888}
+.conn-pill.connected .dot{background:var(--green);box-shadow:0 0 4px var(--green)}
+.conn-pill.connected{color:#a8d8c2}
+.body{background:var(--white);border-radius:0 0 14px 14px;border:1px solid var(--border);border-top:none;padding:28px 32px 20px;}
+.sec{margin-bottom:28px}
+.sec-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border-light);}
+.sec-num{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold-dark);width:28px;line-height:1}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--ink);flex:1}
+.sec-sub{font-size:11px;color:var(--mist)}
+.row{display:grid;gap:12px;margin-bottom:10px}
+.row-2{grid-template-columns:1fr 1fr}
+.row-3{grid-template-columns:1fr 1fr 1fr}
+.row-1-2{grid-template-columns:auto 1fr 1fr}
+@media(max-width:600px){.row-2,.row-3,.row-1-2{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:4px}
+.label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);font-weight:500}
+.label .req{color:var(--red);margin-left:2px}
+.label .hint{color:var(--mist);font-weight:400;font-size:10px;text-transform:none;letter-spacing:0;margin-left:6px}
+.input,.select,.textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--ink);outline:none;transition:border-color .12s;}
+.input:focus,.select:focus,.textarea:focus{border-color:rgba(201,168,76,.45);box-shadow:0 0 0 3px rgba(201,168,76,.08);}
+.textarea{resize:vertical;min-height:64px;line-height:1.5}
+.select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239A9AA8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.card{background:var(--cream);border-radius:10px;padding:18px 20px;border:1px solid var(--border-light);margin-bottom:12px;}
+.card.guardian{background:var(--line-pale);border-color:rgba(6,199,85,.18)}
+.card.student{background:#FCF9F0;border-color:rgba(201,168,76,.18)}
+.card-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border-light)}
+.card-head-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;color:var(--ink);flex:1}
+.card-head-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--line);color:white;font-weight:500}
+.card.student .card-head-tag{background:var(--gold);color:var(--obsidian)}
+.add-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:1px dashed var(--border);padding:8px 14px;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:11.5px;color:var(--slate);cursor:pointer;transition:all .12s;margin-top:4px}
+.add-btn:hover{border-color:var(--gold);color:var(--gold-dark);border-style:solid}
+.remove-btn{background:none;border:none;color:var(--mist);font-size:11px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:all .12s}
+.remove-btn:hover{background:var(--red-pale);color:var(--red)}
+.footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:20px;border-top:1px solid var(--border-light);margin-top:24px}
+.footer-info{font-size:11px;color:var(--mist);flex:1}
+.footer-btn{background:var(--obsidian);color:var(--gold-light);border:none;padding:11px 22px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
+.footer-btn:hover:not(:disabled){background:#1f1f24}
+.footer-btn:disabled{opacity:.5;cursor:not-allowed}
+.footer-btn-ghost{background:none;color:var(--slate);border:1px solid var(--border);padding:10px 16px;border-radius:8px;cursor:pointer;font-size:12.5px;font-family:'DM Sans',sans-serif;}
+.footer-btn-ghost:hover{border-color:var(--slate)}
+.modal-bg{position:fixed;inset:0;background:rgba(13,13,15,.6);backdrop-filter:blur(3px);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.hidden{display:none}
+.modal{background:var(--white);border-radius:12px;padding:26px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.modal h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;margin-bottom:4px;color:var(--ink)}
+.modal p{font-size:12px;color:var(--mist);margin-bottom:20px;line-height:1.6}
+.toast{position:fixed;bottom:24px;right:24px;z-index:200;background:var(--obsidian);color:white;padding:12px 18px;border-radius:8px;font-size:12px;max-width:340px;box-shadow:0 6px 24px rgba(0,0,0,.35);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(8px);pointer-events:none;transition:all .25s}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-left:3px solid var(--green)}
+.toast.error{border-left:3px solid var(--red)}
+.success{text-align:center;padding:40px 20px;}
+.success-icon{width:60px;height:60px;border-radius:50%;background:var(--green-pale);color:var(--green);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:28px}
+.success h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.success p{color:var(--mist);font-size:13px;margin-bottom:24px}
+.success-details{background:var(--cream);border-radius:10px;padding:14px 18px;text-align:left;margin-bottom:20px;font-size:12px}
+.success-details .row-detail{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border-light)}
+.success-details .row-detail:last-child{border-bottom:none}
+.success-details .k{color:var(--mist)}
+.success-details .v{color:var(--ink);font-weight:500;font-family:'DM Mono',monospace;font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="hd-eye">Harland Education · Family Registration</div>
+    <div class="hd-title">Register a <em>new family</em></div>
+    <div class="hd-sub">Enter family details once — used by the messaging system, reporting dashboard, and future Harland HQ app.</div>
+    <div class="conn-pill" id="connPill" onclick="openConfig()">
+      <span class="dot"></span>
+      <span id="connLabel">Not connected</span>
+    </div>
+  </div>
+  <div class="body" id="body">
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">1</span><span class="sec-title">Family details</span><span class="sec-sub">Basic family record</span></div>
+      <div class="row row-2">
+        <div class="field"><label class="label">Family name <span class="req">*</span></label><input class="input" id="f-name" placeholder="e.g. Wu Family / 陳家"></div>
+        <div class="field"><label class="label">Lead source</label><input class="input" id="f-source" placeholder="e.g. Referral — Huang family"></div>
+      </div>
+      <div class="row row-3">
+        <div class="field"><label class="label">Status</label><select class="select" id="f-status"><option value="active">Active</option><option value="pending">Pending</option><option value="paused">Paused</option><option value="alumni">Alumni</option></select></div>
+        <div class="field"><label class="label">Member since</label><input class="input" type="date" id="f-since"></div>
+        <div class="field"><label class="label">VIP flag <span class="hint">(Principal direct)</span></label><select class="select" id="f-vip"><option value="false">No</option><option value="true">Yes — VIP</option></select></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">2</span><span class="sec-title">Guardians</span><span class="sec-sub">Primary + optional second</span></div>
+      <div id="guardiansContainer"></div>
+      <button class="add-btn" id="addGuardianBtn" onclick="addGuardian()">+ Add second guardian</button>
+    </div>
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">3</span><span class="sec-title">Students</span><span class="sec-sub">At least one required</span></div>
+      <div id="studentsContainer"></div>
+      <button class="add-btn" onclick="addStudent()">+ Add another student</button>
+    </div>
+    <div class="sec">
+      <div class="sec-head"><span class="sec-num">4</span><span class="sec-title">Initial note</span><span class="sec-sub">Optional · context for the record</span></div>
+      <div class="field"><textarea class="textarea" id="f-note" placeholder="Any relevant context…"></textarea></div>
+    </div>
+    <div class="footer">
+      <div class="footer-info" id="footerInfo">Complete sections 1–3 to enable registration.</div>
+      <button class="footer-btn-ghost" onclick="resetForm()">Clear</button>
+      <button class="footer-btn" id="submitBtn" onclick="submitForm()" disabled>Register family →</button>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="configModal">
+  <div class="modal">
+    <h2>Connect to Supabase</h2>
+    <p>Enter your Supabase credentials to enable family registration.</p>
+    <div class="field" style="margin-bottom:14px"><label class="label">Supabase URL</label><input class="input" id="cfgSupaUrl" placeholder="https://xxxx.supabase.co" type="url"></div>
+    <div class="field" style="margin-bottom:20px"><label class="label">Service role key <span class="hint">(keep private)</span></label><input class="input" id="cfgSupaKey" placeholder="eyJhbGc..." type="password"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="footer-btn-ghost" onclick="closeConfig()">Cancel</button>
+      <button class="footer-btn" onclick="saveConfig()">Connect</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"><span id="toastMsg"></span></div>
+<script>
+let config={supaUrl:'',supaKey:''};
+let supabaseClient=null;
+let guardianCount=0;
+let studentCount=0;
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('harland-register-config');
+  if(saved){config=JSON.parse(saved);initSupabase();closeConfig();}else{openConfig();}
+  addGuardian();addStudent();updateSubmitState();
+});
+function openConfig(){document.getElementById('cfgSupaUrl').value=config.supaUrl||'';document.getElementById('cfgSupaKey').value=config.supaKey||'';document.getElementById('configModal').classList.remove('hidden');}
+function closeConfig(){document.getElementById('configModal').classList.add('hidden');}
+function saveConfig(){
+  const url=document.getElementById('cfgSupaUrl').value.trim();
+  const key=document.getElementById('cfgSupaKey').value.trim();
+  if(!url||!key){toast('Both URL and key are required','error');return;}
+  config={supaUrl:url,supaKey:key};
+  localStorage.setItem('harland-register-config',JSON.stringify(config));
+  initSupabase();closeConfig();toast('Connected to Supabase ✓','success');
+}
+function initSupabase(){
+  try{
+    supabaseClient=supabase.createClient(config.supaUrl,config.supaKey);
+    document.getElementById('connPill').classList.add('connected');
+    document.getElementById('connLabel').textContent='Connected';
+  }catch(e){toast('Supabase init failed: '+e.message,'error');}
+}
+function addGuardian(){
+  if(guardianCount>=2)return;
+  guardianCount++;const idx=guardianCount;
+  const role=idx===1?'Primary Guardian':'Second Guardian';
+  const isPrimary=idx===1;
+  const html=`<div class="card guardian" id="guardian-${idx}" data-idx="${idx}">
+    <div class="card-head"><span class="card-head-title">${role}</span><span class="card-head-tag">${isPrimary?'REQUIRED':'OPTIONAL'}</span>${!isPrimary?`<button class="remove-btn" onclick="removeGuardian(${idx})">✕ Remove</button>`:''}</div>
+    <div class="row row-1-2">
+      <div class="field"><label class="label">Title ${isPrimary?'<span class=\"req\">*</span>':''}</label><select class="select g-title" data-idx="${idx}" onchange="updateSubmitState()"><option value="">-</option><option>Mr.</option><option>Mrs.</option><option>Ms.</option><option>Dr.</option><option>Prof.</option></select></div>
+      <div class="field"><label class="label">First name ${isPrimary?'<span class=\"req\">*</span>':''}</label><input class="input g-first" data-idx="${idx}" placeholder="e.g. David" oninput="updateSubmitState()"></div>
+      <div class="field"><label class="label">Last name ${isPrimary?'<span class=\"req\">*</span>':''}</label><input class="input g-last" data-idx="${idx}" placeholder="e.g. Wu" oninput="updateSubmitState()"></div>
+    </div>
+    <div class="row row-2">
+      <div class="field"><label class="label">Email ${isPrimary?'<span class=\"req\">*</span>':''}</label><input class="input g-email" data-idx="${idx}" type="email" oninput="updateSubmitState()"></div>
+      <div class="field"><label class="label">Mobile</label><input class="input" data-field="mobile" data-idx="${idx}" placeholder="+886 912 345 678"></div>
+    </div>
+    <div class="row row-2">
+      <div class="field"><label class="label">LINE User ID</label><input class="input" data-field="line_user_id" data-idx="${idx}" placeholder="U5869346adb99..."></div>
+      <div class="field"><label class="label">LINE display handle</label><input class="input" data-field="line_display_name" data-idx="${idx}"></div>
+    </div>
+    <div class="row row-3">
+      <div class="field"><label class="label">Preferred channel</label><select class="select" data-field="preferred_channel" data-idx="${idx}"><option value="line">LINE</option><option value="email">Email</option><option value="phone">Phone</option><option value="in_person">In person</option></select></div>
+      <div class="field"><label class="label">Reply language</label><select class="select" data-field="preferred_language" data-idx="${idx}"><option value="zh-TW">Chinese (繁體)</option><option value="en">English</option></select></div>
+      <div class="field"><label class="label">Tone preference</label><input class="input" data-field="tone_preference" data-idx="${idx}" placeholder="e.g. Professional but warm"></div>
+    </div>
+  </div>`;
+  document.getElementById('guardiansContainer').insertAdjacentHTML('beforeend',html);
+  if(guardianCount===2)document.getElementById('addGuardianBtn').style.display='none';
+}
+function removeGuardian(idx){document.getElementById('guardian-'+idx).remove();guardianCount--;document.getElementById('addGuardianBtn').style.display='';updateSubmitState();}
+function addStudent(){
+  studentCount++;const idx=studentCount;
+  const html=`<div class="card student" id="student-${idx}" data-idx="${idx}">
+    <div class="card-head"><span class="card-head-title">Student ${idx}</span><span class="card-head-tag">${idx===1?'REQUIRED':'ADDITIONAL'}</span>${idx>1?`<button class="remove-btn" onclick="removeStudent(${idx})">✕ Remove</button>`:''}</div>
+    <div class="row row-2">
+      <div class="field"><label class="label">First name <span class="req">*</span></label><input class="input s-first" data-idx="${idx}" placeholder="e.g. Kevin" oninput="updateSubmitState()"></div>
+      <div class="field"><label class="label">Last name</label><input class="input" data-field="last_name" data-idx="${idx}" placeholder="e.g. Wu"></div>
+    </div>
+    <div class="row row-3">
+      <div class="field"><label class="label">School</label><input class="input" data-field="school" data-idx="${idx}" placeholder="e.g. Taipei American School"></div>
+      <div class="field"><label class="label">School type</label><select class="select" data-field="school_type" data-idx="${idx}"><option value="">-</option><option>International American</option><option>International IB</option><option>International British</option><option>Local Public</option><option>Local Private</option><option>Other</option></select></div>
+      <div class="field"><label class="label">Year group</label><input class="input" data-field="year_group" data-idx="${idx}" placeholder="e.g. Grade 10"></div>
+    </div>
+    <div class="row"><div class="field"><label class="label">Current enrolment</label><input class="input" data-field="enrolment_text" data-idx="${idx}" placeholder="e.g. SAT Math · Level 1 · Unit 2"></div></div>
+    <div class="row row-2">
+      <div class="field"><label class="label">Goals</label><textarea class="textarea" data-field="goals" data-idx="${idx}"></textarea></div>
+      <div class="field"><label class="label">Target universities</label><textarea class="textarea" data-field="target_universities" data-idx="${idx}"></textarea></div>
+    </div>
+  </div>`;
+  document.getElementById('studentsContainer').insertAdjacentHTML('beforeend',html);
+  updateSubmitState();
+}
+function removeStudent(idx){if(studentCount===1)return;document.getElementById('student-'+idx).remove();updateSubmitState();}
+function updateSubmitState(){
+  const btn=document.getElementById('submitBtn');
+  const info=document.getElementById('footerInfo');
+  const familyName=document.getElementById('f-name').value.trim();
+  const g1Title=document.querySelector('.g-title[data-idx="1"]')?.value;
+  const g1First=document.querySelector('.g-first[data-idx="1"]')?.value.trim();
+  const g1Last=document.querySelector('.g-last[data-idx="1"]')?.value.trim();
+  const g1Email=document.querySelector('.g-email[data-idx="1"]')?.value.trim();
+  const students=document.querySelectorAll('#studentsContainer .card');
+  const firstStudent=document.querySelector('.s-first[data-idx="1"]')?.value.trim();
+  const valid=familyName&&g1Title&&g1First&&g1Last&&g1Email&&firstStudent&&supabaseClient;
+  btn.disabled=!valid;
+  if(!supabaseClient)info.textContent='Connect to Supabase first.';
+  else if(!valid)info.textContent='Complete required fields (*) to register.';
+  else info.textContent='Ready to register '+familyName+' with '+students.length+' student'+(students.length>1?'s':'')+'.';
+}
+document.addEventListener('DOMContentLoaded',()=>{document.getElementById('f-name').addEventListener('input',updateSubmitState);});
+function collectGuardian(idx){var get=function(sel){return document.querySelector(sel+'[data-idx="'+idx+'"]')?.value.trim()||null;};var getF=function(n){return document.querySelector('[data-field="'+n+'"][data-idx="'+idx+'"]')?.value.trim()||null;};return{role:idx===1?'primary':'secondary',title:get('.g-title'),first_name:get('.g-first'),last_name:get('.g-last'),email:get('.g-email'),mobile:getF('mobile'),line_user_id:getF('line_user_id'),line_display_name:getF('line_display_name'),preferred_channel:getF('preferred_channel')||'line',preferred_language:getF('preferred_language')||'zh-TW',tone_preference:getF('tone_preference')};}
+function collectStudent(idx){var get=function(sel){return document.querySelector(sel+'[data-idx="'+idx+'"]')?.value.trim()||null;};var getF=function(n){return document.querySelector('[data-field="'+n+'"][data-idx="'+idx+'"]')?.value.trim()||null;};return{first_name:get('.s-first'),last_name:getF('last_name'),school:getF('school'),school_type:getF('school_type'),year_group:getF('year_group'),goals:getF('goals'),target_universities:getF('target_universities'),_enrolment_text:getF('enrolment_text')};}
+async function submitForm(){var btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='Registering...';try{var fd={name:document.getElementById('f-name').value.trim(),status:document.getElementById('f-status').value,lead_source:document.getElementById('f-source').value.trim()||null,member_since:document.getElementById('f-since').value||null,vip_flag:document.getElementById('f-vip').value==='true',tier:'seedling'};var r=await supabaseClient.from('families').insert(fd).select().single();if(r.error)throw r.error;var family=r.data;var guardians=[];for(var i=1;i<=guardianCount;i++){if(!document.getElementById('guardian-'+i))continue;var g=collectGuardian(i);g.family_id=family.id;guardians.push(g);}if(guardians.length){var gr=await supabaseClient.from('guardians').insert(guardians);if(gr.error)throw gr.error;}var cards=document.querySelectorAll('#studentsContainer .card');for(var card of cards){var idx=parseInt(card.dataset.idx);var s=collectStudent(idx);var et=s._enrolment_text;delete s._enrolment_text;s.family_id=family.id;s.status='active';var sr=await supabaseClient.from('students').insert(s).select().single();if(sr.error)throw sr.error;if(et){var parts=et.split('·').map(function(p){return p.trim();});await supabaseClient.from('enrolments').insert({student_id:sr.data.id,family_id:family.id,programme:parts[0]||et,level:parts[1]||null,status:'active',start_date:new Date().toISOString().split('T')[0]});}}var note=document.getElementById('f-note').value.trim();if(note)await supabaseClient.from('family_notes').insert({family_id:family.id,body:note,created_by:'Registration form'});await supabaseClient.from('family_activity').insert({family_id:family.id,type:'administrative',event:'Family registered',description:'Registered via Harland HQ form.',created_by:'Registration form'});document.getElementById('body').innerHTML='<div class="success"><div class="success-icon">✓</div><h2>Family registered</h2><p>'+family.name+' added to Supabase.</p><button class="footer-btn" onclick="location.reload()">Register another</button></div>';}catch(err){toast('Registration failed: '+err.message,'error');btn.disabled=false;btn.textContent='Register family →';}}
+function resetForm(){if(!confirm('Clear all fields?'))return;location.reload();}
+function toast(msg,type){var t=document.getElementById('toast');var m=document.getElementById('toastMsg');t.className='toast show '+(type||'info');m.textContent=msg;setTimeout(function(){t.classList.remove('show');},3500);}
+</script>
+</body>
+</html>
